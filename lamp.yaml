@@ -1,0 +1,33 @@
+---
+- hosts: debian
+  become: True
+  vars_files:
+    - vars/database.yaml
+  roles:
+    - geerlingguy.mysql
+
+
+- hosts: redhat
+  tasks:
+  - name: Install SELinux dependencies
+    yum: name={{ item }} state=latest
+    with_items:
+      - libselinux-python
+      - libsemanage-python
+
+  - name: Add epel repository
+    yum_repository:
+      name: epel
+      description: EPEL YUM repo
+      baseurl: https://download.fedoraproject.org/pub/epel/$releasever/$basearch/
+      gpgkey: https://download.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7
+      gpgcheck: yes
+
+
+- hosts: redhat
+  vars_files:
+    - vars/wp.yaml
+  roles:
+    - geerlingguy.php
+    - darthwade.wordpress
+    - darthwade.wordpress-apache
