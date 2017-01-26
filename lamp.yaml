@@ -1,5 +1,5 @@
 ---
-- hosts: debian
+- hosts: database
   become: True
   vars_files:
     - vars/database.yaml
@@ -7,7 +7,7 @@
     - geerlingguy.mysql
 
 
-- hosts: redhat
+- hosts: frontend
   tasks:
   - name: Install SELinux dependencies
     yum: name={{ item }} state=latest
@@ -24,7 +24,7 @@
       gpgcheck: yes
 
 
-- hosts: redhat
+- hosts: frontend
   vars_files:
     - vars/wp.yaml
   roles:
